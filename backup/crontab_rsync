@@ -1,0 +1,1 @@
+0 * * * * user-backup  /usr/bin/rsync -arz /var/jarservice/sausage-store-0.0.1-SNAPSHOT.jar  user-backup@10.129.0.47:/opt/backup/$(date +"\%Y-\%m-\%d-\%H")/
