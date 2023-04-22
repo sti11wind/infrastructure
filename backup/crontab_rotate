@@ -1,1 +1,1 @@
-cd /opt/backup && ls -t | sed -e '1,30d' | sudo xargs rm -Rf
+0 * * * *  cd /opt/backup && ls -t | sed -e '1,30d' | sudo xargs rm -Rf
