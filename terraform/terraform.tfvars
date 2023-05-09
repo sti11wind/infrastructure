@@ -1,3 +1,2 @@
 cloud_id = "b1g3jddf4nv5e9okle7p"
 folder_id = "b1g4v2q4j0dfegi3pmsc"
-token = "t1.9euelZqLyJXPz52XzZGMxpTHkI2OkO3rnpWalIubip7Kj4_NlpyTxprPz5Pl8_dnThpd-e8ZZ1Jg_N3z919AGl357xlnUmD8.aJ2CeKJvf5W9gCiFCPJ2C8NT08qrNdGaxrNSvjTg1sdRld6VI1kMGcjy-G5wx2jFeRoWJxiKy-8NHFroT3LzDw"

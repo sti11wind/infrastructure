@@ -1,8 +1,6 @@
   variable "token" {
 
     type        = string
-    
-    default     = "t1.9euelZqLlZLJj4qZl5nPmZ3Nj5Scm-3rnpWalIubip7Kj4_NlpyTxprPz5Pl8_c7XT9d-e9mFR0v_N3z9zNPP13572YVHS_8.UxzpWOXX-DvhqP70n2kHY76rAaoXjhXec6WwZp2-ubw35376kcc-Cst4wCG1EJ53tK2C_oWgNG7DBheUCXynAA"
     sensitive = true
     nullable = false
 }
