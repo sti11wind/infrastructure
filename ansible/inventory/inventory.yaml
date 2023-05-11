@@ -1,0 +1,9 @@
+all: # Все серверы в нашем inventory, all - обязателен
+  children: # Дочерние группы для all
+    store: # Группа хостов с именем backend
+      hosts:
+        51.250.92.161:
+         ansible_user: ansible
+         list_of_packages: ["openjdk-16-jdk", "nodejs"]
+         list_of_npm_packages: [http-server]
+

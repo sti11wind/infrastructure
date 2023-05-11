@@ -1,0 +1,20 @@
+---
+# handlers file for frontend
+  - name: Unzip frontend
+    unarchive:
+      src: /tmp/sausage-store.tar.gz
+      dest: /var/www-data/dist/frontend/
+      remote_src: yes
+      extra_opts: [--strip-components=2]
+    become: yes
+
+
+  - name: "Service reload"
+    systemd:
+      daemon_reload: yes
+
+  - name: "frontend service restart"
+    service:
+      name: sausage-store-frontend
+      state: restarted
+

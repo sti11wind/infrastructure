@@ -1,0 +1,24 @@
+---
+# handlers file for backend
+  - name: Move backend
+    copy:
+      src: /tmp/sausage-store.jar
+      dest: /home/jarservice/sausage-store.jar
+      owner: jarservice
+      group: jarservice
+      mode: '0755'
+      remote_src: yes
+    become: yes
+
+
+
+  - name: "Service reload"
+    systemd:
+      daemon_reload: yes
+
+  - name: "Backend service restart"
+    service:
+      name: sausage-store-backend
+      state: restarted
+
+

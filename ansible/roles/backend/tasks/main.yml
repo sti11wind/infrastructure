@@ -1,0 +1,69 @@
+---
+# tasks file for backendi
+  - name: Update and upgrade apt packages
+    become: yes
+    become_method: "sudo"
+    apt:
+      upgrade: no
+      update_cache: yes
+
+  - name: Install Java
+    become: yes
+    apt: 
+      name: openjdk-16-jdk 
+      state: present
+
+
+
+  - name: "Creating user jarservice"
+    become: yes
+    become_method: "sudo"
+    user:
+      name: "{{ backend_service_user }}"
+      password: "{{ jarservice_secret }}"
+
+  - name: "Creates directory /opt/log/"
+    become: yes
+    become_method: "sudo"
+    file:
+      path: /opt/log/
+      state: directory
+      owner: "{{ backend_service_user }}"
+      group: "{{ backend_service_user }}"
+      mode: 0775
+
+  - name: "Creates directory /logs/"
+    become: yes
+    become_method: "sudo"
+    file:
+      path: /logs/
+      state: directory
+      owner: "{{ backend_service_user }}"
+      group: "{{ backend_service_user }}"
+      mode: 0775
+
+
+
+
+  - name: "download  backend"                       
+    get_url:                                        
+      url: "{{ nexus_backend_url }}/{{ backend_maven_version }}/sausage-store-{{ backend_maven_version }}.jar"    
+      username: "{{ nexus_username }}"
+      password: "{{ nexus_password }}"
+      dest: /tmp/sausage-store.jar    
+    notify: Move backend
+    
+
+
+  - name: "Backend service"
+    become: yes
+    become_method: "sudo"
+    template: 
+      src: sausage-store-backend.service.j2  
+      dest: /etc/systemd/system/sausage-store-backend.service
+    notify:
+      - Service reload 
+      - Backend service restart
+
+
+

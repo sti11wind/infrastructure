@@ -1,0 +1,96 @@
+---
+# tasks file for frontend
+  - name: Update and upgrade apt packages
+    become: yes
+    become_method: "sudo"
+    apt:
+      upgrade: no
+      update_cache: yes
+
+
+  - name: "Add nodejs apt key"
+    apt_key:
+      url: https://deb.nodesource.com/gpgkey/nodesource.gpg.key
+      state: present
+    become: yes
+    become_method: "sudo"
+
+  - name: "Add nodejs 16.x for apt repo"
+    become: yes
+    become_method: "sudo"
+    apt_repository:
+      repo: "deb https://deb.nodesource.com/node_16.x {{ ansible_distribution_release }} main"
+      state: present
+      update_cache: yes    
+
+
+
+  - name: "Install {{ list_of_packages }}"
+    become: yes
+    become_method: "sudo"
+    apt:
+      update_cache: yes
+      name: "{{ item }}"
+      state: present
+    loop: "{{ list_of_packages }}"
+
+
+  - name: "Install NPM {{ list_of_npm_packages }}"
+    become: yes
+    become_method: "sudo"
+    npm:
+      name: "{{ item }}"
+      global: yes
+      state: present
+    loop: "{{ list_of_npm_packages }}"
+ 
+
+  - name: "run web server on standart port"
+    ansible.builtin.shell: setcap 'cap_net_bind_service=+ep' `which node`
+    become: true 
+
+
+  - name: "Creating users www-data"
+    become: yes
+    become_method: "sudo"
+    user:
+      name: "{{ frontend_service_user }}"
+      password: "{{ www_data_secret }}"
+
+
+
+
+  - name: "Creates directory www-data"
+    become: yes
+    become_method: "sudo"
+    file:
+      path: /var/www-data/dist/frontend/
+      state: directory
+      owner: "{{ frontend_service_user }}"
+      group: "{{ frontend_service_user }}"
+      mode: 0755
+
+
+
+
+  - name: "download  frontend"
+    get_url:
+      url: "{{ nexus_frontend_url }}/{{ frontend_version }}/sausage-store-{{ frontend_version }}.tar.gz"
+      username: "{{ nexus_username }}" 
+      password: "{{ nexus_password }}"
+      dest: /tmp/sausage-store.tar.gz
+    notify: Unzip frontend
+
+
+
+  - name: "Frontend service"
+    become: yes
+    become_method: "sudo"
+    template: 
+      src: sausage-store-frontend.service.j2  
+      dest: /etc/systemd/system/sausage-store-frontend.service
+    notify:
+      - Service reload
+      - frontend service restart
+
+
