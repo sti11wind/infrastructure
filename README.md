@@ -90,3 +90,9 @@ For open source projects, say how it is licensed.
 
 ## Project status
 If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+
+
+create INDEX  idx_product_id on product (id);
+create INDEX  idx_product_price on product (price);
+create INDEX  idx_order_product_id on order_product (product_id);
+create INDEX  idx_order_order_id on order_product (order_id);
