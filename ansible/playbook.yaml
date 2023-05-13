@@ -1,0 +1,12 @@
+---
+- name: backend
+  hosts: store
+  roles: 
+    - backend
+  vars_files:  ./group_vars/backend.yml
+
+- name: frontend
+  hosts: store
+  roles:
+    - frontend
+  vars_files:  ./group_vars/frontend.yml
