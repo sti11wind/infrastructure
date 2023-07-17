@@ -2,24 +2,24 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: backend
+  name: frontend
   labels:
-    app: backend
+    app: frontend
 spec:
   replicas: 1
   strategy:
     type: Recreate
   selector:
     matchLabels:
-      app: backend
+      app: frontend
   template:
     metadata:
       labels:
-        app: backend
+        app: frontend
     spec:
       containers:
-        - name: backend
-          image: gitlab.praktikum-services.ru:5050/std-014-65/sausage-store/sausage-backend:latest
+        - name: frontend
+          image: gitlab.praktikum-services.ru:5050/std-014-65/sausage-store/sausage-frontend:latest
           imagePullPolicy: IfNotPresent
           resources:
             requests:
@@ -28,40 +28,21 @@ spec:
             limits:
               memory: "512Mi"
               cpu: "1"
-          env:
-            - name: SPRING_DATA_MONGODB_URI
-              valueFrom:
-                secretKeyRef:
-                  name: backend
-                  key: db
-            - name: SPRING_DATASOURCE_URL
-              valueFrom:
-                secretKeyRef:
-                  name: backend
-                  key: host
-            - name: SPRING_DATASOURCE_USERNAME
-              valueFrom:
-                secretKeyRef:
-                  name: backend
-                  key: username
-            - name: SPRING_DATASOURCE_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: backend
-                  key: password
-            - name: SPRING_FLYWAY_ENABLED
-              value: "false"
-
+          volumeMounts:
+            - name: nginx-conf
+              mountPath: /etc/nginx/conf.d
+              #subPath: nginx.conf
+              readOnly: true
           ports:
-            - name: backend
-              containerPort: 8080
-          livenessProbe:
-            httpGet:
-              path: /actuator/
-              port: 8080
-            initialDelaySeconds: 15
-            periodSeconds: 30
-            timeoutSeconds: 1
-            failureThreshold: 6
+            - name: frontend
+              containerPort: 80
       imagePullSecrets:
         - name: regcred
+      volumes:
+        - name: nginx-conf
+          configMap:
+            name: nginx-conf
+            items:
+            - key: default.conf
+              path: default.conf
+                                 
