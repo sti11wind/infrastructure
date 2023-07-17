@@ -1,0 +1,43 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-report
+  labels:
+    app: backend-report
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: backend-report
+  template:
+    metadata:
+      labels:
+        app: backend-report
+    spec:
+      containers:
+        - name: backend-report
+          image: gitlab.praktikum-services.ru:5050/std-014-65/sausage-store/sausage-backend-report:latest
+          imagePullPolicy: IfNotPresent
+          resources:
+            requests:
+              memory: "258Mi"
+              cpu: "500m"
+            limits:
+              memory: "512Mi"
+              cpu: "1"
+          env:
+            - name: DB
+              valueFrom:
+                secretKeyRef:
+                  name: backend-report
+                  key: db
+            - name: port
+              value: "8080"
+          ports:
+            - name: backend-report
+              containerPort: 8080
+      imagePullSecrets:
+        - name: regcred
