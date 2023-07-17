@@ -2,35 +2,66 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: frontend
+  name: backend
   labels:
-    app: frontend
+    app: backend
 spec:
-  revisionHistoryLimit: 15
   replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
-      app: frontend
+      app: backend
   template:
     metadata:
       labels:
-        app: frontend
+        app: backend
     spec:
-      nodeSelector:
-        app: frontend
       containers:
-        - name: frontend
-          image: gitlab.praktikum-services.ru:5050/std-014-65/sausage-store/sausage-frontend:latest
+        - name: backend
+          image: gitlab.praktikum-services.ru:5050/std-014-65/sausage-store/sausage-backend:latest
           imagePullPolicy: IfNotPresent
+          resources:
+            requests:
+              memory: "258Mi"
+              cpu: "500m"
+            limits:
+              memory: "512Mi"
+              cpu: "1"
+          env:
+            - name: SPRING_DATA_MONGODB_URI
+              valueFrom:
+                secretKeyRef:
+                  name: backend
+                  key: db
+            - name: SPRING_DATASOURCE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: backend
+                  key: host
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: backend
+                  key: username
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: backend
+                  key: password
+            - name: SPRING_FLYWAY_ENABLED
+              value: "false"
+
           ports:
-            - name: frontend
+            - name: backend
               containerPort: 8080
-          volumeMounts:
-          - name: nginx-conf
-            mountPath: /etc/nginx/conf.d/
-      volumes:
-      - name: nginx-conf
-        configMap:
-          name: sausage-store-configmap
+          livenessProbe:
+            httpGet:
+              path: /actuator/
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 30
+            timeoutSeconds: 1
+            failureThreshold: 6
       imagePullSecrets:
-        - name: docker-config-secret
+        - name: regcred
