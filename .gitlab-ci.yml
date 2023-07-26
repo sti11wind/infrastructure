@@ -1,6 +1,6 @@
 stages:
   - kubernetes
-
+   
 kubernetes:
   stage: kubernetes
   image: alpine/k8s:1.22.6
