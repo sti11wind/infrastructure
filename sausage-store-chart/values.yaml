@@ -1,0 +1,67 @@
+global:
+  backendName: backend
+  backendPort: 8080
+  dockerconfigjson: 
+  mongodb: 
+
+
+frontend:
+  replicas: 1
+  revisionHistoryLimit: 15  
+  image: 
+  tag: "latest"
+  magePullPolicy: IfNotPresent
+  resources:
+    requests:
+      memory: "258Mi"
+      cpu: "0.1"
+    limits:
+      memory: "512Mi"
+      cpu: "0.2"
+  containerPort: 80
+  ingressHost: 
+  ingressPort: 80
+  
+
+
+backend-report:
+  replicas: 1
+  revisionHistoryLimit: 15  
+  image: 
+  tag: "latest"
+  magePullPolicy: IfNotPresent
+  resources:
+    requests:
+      memory: "258Mi"
+      cpu: "0.1"
+    limits:
+      memory: "512Mi"
+      cpu: "0.2"
+  containerPort: 8080
+  averageUtilization: 75
+
+
+backend:
+  replicas: 1
+  revisionHistoryLimit: 15  
+  image: 
+  tag: "latest"
+  magePullPolicy: IfNotPresent
+  rollingUpdate:
+    maxUnavailable: 2
+    maxSurge: 20%
+  resources:
+    requests:
+      memory: "258Mi"
+      cpu: "0.1"
+    limits:
+      memory: "512Mi"
+      cpu: "0.2"
+  containerPort: 8080
+  averageUtilization: 75
+  data:     
+   host: 
+   username: 
+   password: 
+
+                                 
